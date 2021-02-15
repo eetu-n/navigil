@@ -1,74 +1,44 @@
 #include <stdint.h>
 #include <errno.h>
 
-#define MASK_ERR 0xff
-#define STATE_ERR 0xf
+#include "external.h"
+#include "light_wrapper.h"
 
-#define TIMER_THRESH_0 5
-#define TIMER_THRESH_1 20
-#define TIMER_BLINK_RATE 5
-#define TIMER_BLINK_TIME 300
-
-#define IS_VALID_ID(id) (id >= 1 && id <= 10)
-
-static uint16_t led_states = 0x0;
-
-static uint16_t get_led_state_mask(int id){
-    if(!IS_VALID_ID(id)){
-        errno = EIO;
-        return MASK_ERR;
-    }
-
-    uint16_t result = 1 << id - 1;
-    return result;
-}
-
-static uint8_t is_led_on(int id){
-    if(!IS_VALID_ID(id)){
-        errno = EIO;
-        return STATE_ERR;
-    }
-
-    return led_states & get_led_state_mask(id);
-}
-
-static uint8_t set_led_on(int id){
-    if(!IS_VALID_ID(id)){
-        errno = EIO;
+static int8_t handle_button_press(int id){
+    if(button_timers[id] < TIMER_THRESH_0){
         return 0;
-    }
-
-    light_on(id);
-    led_states = led_states | get_led_state_mask(id);
-    return 1;
-}
-
-static uint8_t set_led_off(int id){
-    if(!IS_VALID_ID(id)){
-        errno = EIO;
+    } else if(button_timers[id] >= TIMER_THRESH_0 && button_timers[id] < TIMER_THRESH_1) {
+        led_toggle(id);
         return 0;
-    }
-
-    light_off(id);
-    led_states = led_states & ~ get_led_state_mask(id);
-    return 1;
-}
-
-static uint8_t led_toggle(int id){
-    if(!IS_VALID_ID(id)){
-        errno = EIO;
-        return 0;
-    }
-
-    if (is_led_set(id)){
-        return set_led_off(id);
     } else {
-        return set_led_on(id);
+        led_start_blinking(id);
+        return 0;
     }
 }
 
 void init(void){
+    for(int i = 1; i <= LED_AMOUNT; i++){
+        led_stop_blinking(i);
+        set_led_off(i);
+        led_timers[i] = 0;
+        button_timers[i] = 0;
+    }
 }
 
 void timer(void){
+    for(int i = 1; i <= LED_AMOUNT; i++){
+        if(is_led_blinking(i)){
+            led_timers[i]++;
+            if(led_timers[i] % TIMER_BLINK_RATE == 0) led_toggle(i);
+            if(led_timers[i] >= TIMER_BLINK_TIME) led_stop_blinking(i);
+            continue;
+        }
+
+        if(is_button_pressed(i)){
+            button_timers[i]++;
+        } else {
+            handle_button_press(i);
+            button_timers[i] = 0;
+        }
+    }
 }
