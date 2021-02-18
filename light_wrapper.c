@@ -112,7 +112,7 @@ int8_t led_start_blinking(int id){
     if(!IS_VALID_ID(id)){
         errno = EIO;
         #ifdef DEBUG
-        printf("IO Error in led_start_blinking: got %d, expected in range 1-%d\n", id, LED_AMOUNT);
+        print_log("FATAL", "IO Error in led_start_blinking: got %d, expected in range 1-%d\n", id, LED_AMOUNT);
         #endif
         return -1;
     }
@@ -127,7 +127,7 @@ int8_t led_stop_blinking(int id){
     if(!IS_VALID_ID(id)){
         errno = EIO;
         #ifdef DEBUG
-        printf("IO Error in led_stop_blinking: got %d, expected in range 1-%d\n", id, LED_AMOUNT);
+        print_log("FATAL", "IO Error in led_stop_blinking: got %d, expected in range 1-%d\n", id, LED_AMOUNT);
         #endif
         return -1;
     }
