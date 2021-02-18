@@ -3,11 +3,12 @@
 
 #include "logger.h"
 
-void print_log(const char* tag, const char* message, va_list args) {
+void print_log(const char* tag, const char* message, ...) {
+    va_list args;
     time_t now;
     time(&now);
 
     printf("%s [%s] ", ctime(&now), tag);
-    vprintf(message, args);
+    printf(message, args);
     printf("\n");
 }

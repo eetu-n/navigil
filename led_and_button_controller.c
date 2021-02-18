@@ -67,12 +67,12 @@ void timer(void){
 
         if(is_button_pressed(i)){
             #if DEBUG >= 3
-            print_log("DEBUG", "Button %d is pressed", id);
+            print_log("DEBUG", "Button %d is pressed", i);
             #endif
             button_timers[i]++;
         } else {
             #if DEBUG >= 3
-            print_log("DEBUG", "Button %d is not pressed", id);
+            print_log("DEBUG", "Button %d is not pressed", i);
             #endif
             handle_button_press(i);
             button_timers[i] = 0;
