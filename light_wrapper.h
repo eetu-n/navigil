@@ -1,8 +1,8 @@
-#include <stdint.h>
-
 #ifndef LIGHT_WRAPPER_H
 #define LIGHT_WRAPPER_H
 #pragma once
+
+#include <stdint.h>
 
 // At most 15
 #ifndef LED_AMOUNT
@@ -36,5 +36,8 @@ int8_t led_toggle(int id);
 int8_t led_start_blinking(int id);
 int8_t led_stop_blinking(int id);
 int8_t is_led_blinking(int id);
+
+//For testing
+int8_t is_led_on(int id);
 
 #endif
