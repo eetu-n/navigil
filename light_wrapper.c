@@ -33,7 +33,7 @@ int8_t is_led_on(int id){
         return -1;
     }
 
-    return (int8_t) (led_states & get_led_state_mask(id)) >> (id - 1);
+    return (int8_t) ((led_states & get_led_state_mask(id)) >> (id - 1));
 }
 
 static int8_t was_led_on(int id){
@@ -45,7 +45,7 @@ static int8_t was_led_on(int id){
         return -1;
     }
 
-    return (int8_t) (led_pre_blink_states & get_led_state_mask(id)) >> (id - 1);
+    return (int8_t) ((led_pre_blink_states & get_led_state_mask(id)) >> (id - 1));
 }
 
 int8_t is_led_blinking(int id){
@@ -57,7 +57,7 @@ int8_t is_led_blinking(int id){
         return -1;
     }
 
-    return (int8_t) (led_blink_states & get_led_state_mask(id)) >> (id - 1);
+    return (int8_t) ((led_blink_states & get_led_state_mask(id)) >> (id - 1));
 }
 
 int8_t set_led_on(int id){

@@ -70,6 +70,28 @@ START_TEST (single_button_blink_alternate){
     ck_assert(passed);
 } END_TEST
 
+START_TEST (multi_button_blink_alternate){
+    bool passed = true;
+    init();
+    button_on(1);
+    button_on(9);
+    for(int i = 0; i < 25; i++) timer();
+    button_off(1);
+    button_off(9);
+    for(int i = 0; i < 301; i++){
+        timer();
+        if((i / 5) % 2){
+            if(!is_led_on(1)) passed = false;
+            if(!is_led_on(9)) passed = false;
+        } else {
+            if(is_led_on(1)) passed = false;
+            if(is_led_on(9)) passed = false;
+        }
+    }
+
+    ck_assert(passed);
+} END_TEST
+
 
 Suite * main_suite(void){
     Suite *s;
@@ -85,6 +107,7 @@ Suite * main_suite(void){
     tcase_add_test(tc_core, single_button_blink);
     tcase_add_test(tc_core, single_button_blink_return);
     tcase_add_test(tc_core, single_button_blink_alternate);
+    tcase_add_test(tc_core, multi_button_blink_alternate);
 
     suite_add_tcase(s, tc_core);
 
